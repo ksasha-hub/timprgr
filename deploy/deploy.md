@@ -7,7 +7,7 @@
 
 ## Copy project to the VPS
 ```bash
-git clone https://github.com/ksasha-hub/timprgr.git
+git clone https://github.com/YOUR_USERNAME/timprgr.git
 cd timprgr
 cp .env.example .env
 ```
