@@ -1,16 +1,11 @@
+import { isValidCode, normalizeDisplayCode } from './code.js';
+
+const MAX_MESSAGE_BYTES = 4 * 1024;
 const $ = (id) => document.getElementById(id);
 
 function getCodeFromHash() {
   const h = new URLSearchParams((location.hash || '').replace(/^#/, ''));
   return h.get('code') || '';
-}
-
-function normalizeCode(s) {
-  return (s || '')
-    .trim()
-    .toUpperCase()
-    .replace(/\s+/g, '')
-    .replace(/[^A-Z0-9-]/g, '');
 }
 
 function utf8ToBytes(s) {
@@ -131,8 +126,8 @@ function wsUrl() {
 }
 
 (async function main() {
-  const code = normalizeCode(getCodeFromHash());
-  if (!code) {
+  const code = normalizeDisplayCode(getCodeFromHash());
+  if (!isValidCode(code)) {
     location.href = '/';
     return;
   }
@@ -153,7 +148,9 @@ function wsUrl() {
   const ws = new WebSocket(wsUrl());
 
   function send(obj) {
+    if (ws.readyState !== WebSocket.OPEN) return false;
     ws.send(JSON.stringify(obj));
+    return true;
   }
 
   ws.addEventListener('open', () => {
@@ -223,10 +220,17 @@ function wsUrl() {
     setStatus('Соединение закрыто.');
   });
 
+  $('msgIn').maxLength = MAX_MESSAGE_BYTES;
+
   async function sendMessage() {
     const text = ($('msgIn').value || '').trim();
     if (!text) return;
     if (!joined) return;
+
+    if (utf8ToBytes(text).length > MAX_MESSAGE_BYTES) {
+      addMessage({ who: 'sys', text: 'Сообщение слишком длинное.', kind: 'sys' });
+      return;
+    }
 
     if (!aesKey) {
       addMessage({ who: 'sys', text: 'Ожидаем установку шифрования…', kind: 'sys' });
