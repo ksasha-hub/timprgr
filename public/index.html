@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>One‑Time Room</title>
+    <title>timprgr</title>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' ws: wss:; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'self'" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <main class="container">
-      <h1>One‑Time Room</h1>
+      <h1>timprgr</h1>
       <p class="muted">
         Одноразовая комната на двоих. Вводите один и тот же код, сообщения шифруются в браузере.
         История не сохраняется на сервере и исчезает после выхода.
@@ -34,7 +34,7 @@
       <section class="card">
         <h2>Войти по коду</h2>
         <label class="label" for="codeIn">Код</label>
-        <input id="codeIn" class="input" placeholder="например 482-917-203" autocomplete="off" />
+        <input id="codeIn" class="input code-input" placeholder="например ABCD-EFGH-IJKL-MNOP" autocomplete="off" spellcheck="false" />
         <button id="joinBtn" class="btn">Войти</button>
         <p id="err" class="error hidden"></p>
       </section>

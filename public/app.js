@@ -1,25 +1,6 @@
+import { generateCode, isValidCode, normalizeDisplayCode } from './code.js';
+
 const $ = (id) => document.getElementById(id);
-
-function normalizeCode(s) {
-  return (s || '')
-    .trim()
-    .toUpperCase()
-    .replace(/\s+/g, '')
-    .replace(/[^A-Z0-9-]/g, '');
-}
-
-function randomDigits(n) {
-  const bytes = new Uint8Array(n);
-  crypto.getRandomValues(bytes);
-  let out = '';
-  for (let i = 0; i < n; i++) out += String(bytes[i] % 10);
-  return out;
-}
-
-function generateCode() {
-  // 9 digits grouped: xxx-xxx-xxx
-  return `${randomDigits(3)}-${randomDigits(3)}-${randomDigits(3)}`;
-}
 
 function showError(msg) {
   const el = $('err');
@@ -34,11 +15,13 @@ function clearError() {
 }
 
 function goToRoom(code) {
-  const c = normalizeCode(code);
-  if (!c) {
-    showError('Введите код комнаты.');
+  if (!isValidCode(code)) {
+    showError('Введите код комнаты в формате XXXX-XXXX-XXXX-XXXX.');
     return;
   }
+
+  const c = normalizeDisplayCode(code);
+
   // keep code in hash (not sent to server by browser in request)
   location.href = `/room.html#code=${encodeURIComponent(c)}`;
 }
@@ -69,4 +52,8 @@ $('codeIn').addEventListener('keydown', (e) => {
     clearError();
     goToRoom($('codeIn').value);
   }
+});
+
+$('codeIn').addEventListener('input', () => {
+  $('codeIn').value = normalizeDisplayCode($('codeIn').value);
 });
