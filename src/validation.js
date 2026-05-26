@@ -10,7 +10,8 @@ function isBase64(value) {
 }
 
 export function maxCiphertextLengthFor(maxMessageBytes) {
-  // AES-GCM appends a 16-byte authentication tag; the result is then base64-encoded.
+  // Given a plaintext message limit in bytes, return the maximum base64-encoded
+  // ciphertext length after AES-GCM adds its 16-byte authentication tag.
   return Math.ceil((maxMessageBytes + 16) / 3) * 4;
 }
 

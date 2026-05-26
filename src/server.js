@@ -34,9 +34,24 @@ function broadcast(room, payload, exceptWs = null) {
   }
 }
 
-function buildContentSecurityPolicy(req) {
+function getValidatedHost(req) {
   const host = req.get('host');
+  if (!host) return null;
+
+  if (/^\[[A-Fa-f0-9:]+\](?::\d{1,5})?$/.test(host)) {
+    return host;
+  }
+
+  if (/^[A-Za-z0-9.-]+(?::\d{1,5})?$/.test(host)) {
+    return host;
+  }
+
+  return null;
+}
+
+function buildContentSecurityPolicy(req) {
   const connectSources = ["'self'"];
+  const host = getValidatedHost(req);
 
   if (host) {
     const wsProtocol = req.protocol === 'https' ? 'wss' : 'ws';
