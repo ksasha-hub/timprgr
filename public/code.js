@@ -1,4 +1,6 @@
 const CROCKFORD_ALPHABET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+const MIN_ROOM_CODE_LENGTH = 16;
+const MAX_ROOM_CODE_LENGTH = 20;
 const ROOM_CODE_LENGTH = 16;
 const ROOM_CODE_GROUP_SIZE = 4;
 
@@ -26,7 +28,7 @@ export function normalizeCode(value) {
     }
   }
 
-  return normalized.slice(0, 20);
+  return normalized.slice(0, MAX_ROOM_CODE_LENGTH);
 }
 
 export function normalizeDisplayCode(value) {
@@ -35,7 +37,7 @@ export function normalizeDisplayCode(value) {
 
 export function isValidCode(value) {
   const normalized = normalizeCode(value);
-  return normalized.length >= 16 && normalized.length <= 20;
+  return normalized.length >= MIN_ROOM_CODE_LENGTH && normalized.length <= MAX_ROOM_CODE_LENGTH;
 }
 
 export function generateCode(length = ROOM_CODE_LENGTH) {
