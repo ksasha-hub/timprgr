@@ -1,0 +1,15 @@
+{
+  "name": "timprgr",
+  "version": "0.1.0",
+  "private": true,
+  "description": "One-time E2E encrypted 2-person chat rooms via one-time code",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "ws": "^8.18.0"
+  }
+}
