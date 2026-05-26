@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Room</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' ws: wss:; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'self'" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <div class="topbar">
+        <div>
+          <div class="label">Комната</div>
+          <div id="roomLabel" class="code"></div>
+        </div>
+        <button id="leaveBtn" class="btn secondary">Выйти</button>
+      </div>
+
+      <div id="status" class="status">Подключение…</div>
+
+      <section id="chat" class="card">
+        <div id="messages" class="messages"></div>
+        <div class="composer">
+          <input id="msgIn" class="input" placeholder="Сообщение…" autocomplete="off" />
+          <button id="sendBtn" class="btn">Отправить</button>
+        </div>
+      </section>
+
+      <p class="muted small">Комната уничтожится, когда оба участника выйдут или по TTL.</p>
+    </main>
+
+    <script type="module" src="/room.js"></script>
+  </body>
+</html>
