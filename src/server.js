@@ -34,9 +34,21 @@ function broadcast(room, payload, exceptWs = null) {
   }
 }
 
-function applySecurityHeaders(res) {
+function buildContentSecurityPolicy(req) {
+  const host = req.get('host');
+  const connectSources = ["'self'"];
+
+  if (host) {
+    const wsProtocol = req.protocol === 'https' ? 'wss' : 'ws';
+    connectSources.push(`${wsProtocol}://${host}`);
+  }
+
+  return `default-src 'self'; connect-src ${connectSources.join(' ')}; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'self'`;
+}
+
+function applySecurityHeaders(req, res) {
   res.setHeader('Cache-Control', 'no-store');
-  res.setHeader('Content-Security-Policy', "default-src 'self'; connect-src 'self'; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'self'");
+  res.setHeader('Content-Security-Policy', buildContentSecurityPolicy(req));
   res.setHeader('Referrer-Policy', 'no-referrer');
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
@@ -50,15 +62,11 @@ export function createServerApp() {
   app.set('trust proxy', config.trustProxy);
   app.disable('x-powered-by');
   app.use((req, res, next) => {
-    applySecurityHeaders(res);
+    applySecurityHeaders(req, res);
     next();
   });
   app.use(express.json({ limit: '16kb' }));
-  app.use(express.static(config.staticDir, {
-    setHeaders(res) {
-      applySecurityHeaders(res);
-    }
-  }));
+  app.use(express.static(config.staticDir));
 
   const roomStore = new RoomStore({ ttlMs: config.roomTtlMs });
   const joinRateLimiter = createFixedWindowRateLimiter({
